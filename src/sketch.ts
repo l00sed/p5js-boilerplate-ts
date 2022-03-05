@@ -26,10 +26,10 @@ export const sketch = ( p: p5Typed, dom: p5DOM ) => {
   }
 
   const exportVideo = ( e ) => {
-    var blob = new Blob( chunks, { 'type' : 'video/webm' } )
+    var blob = new Blob( chunks, { 'type' : 'video/mp4' } )
 
     // Draw video to screen
-    var videoElement = document.createElement( 'video ')
+    var videoElement = document.createElement( 'video')
     videoElement.setAttribute( "id", Date.now() )
     videoElement.controls = true
     document.body.appendChild( videoElement )
@@ -41,7 +41,7 @@ export const sketch = ( p: p5Typed, dom: p5DOM ) => {
     document.body.appendChild( a )
     a.style = 'display: none'
     a.href = url
-    a.download = 'sketch.webm'
+    a.download = 'sketch.mp4'
     a.click()
     window.URL.revokeObjectURL( url )
   }
@@ -66,13 +66,13 @@ export const sketch = ( p: p5Typed, dom: p5DOM ) => {
     // Export sketch's canvas to file when pressing "r"
     // if recording now true, start recording
     if ( p.keyCode === 82 && recording ) {
-      console.log( ".webm recording started" );
+      console.log( ".mp4 recording started" );
       recorder.start();
     }
 
     // if we are recording, stop recording
     if ( p.keyCode === 82 && !recording) {
-      console.log( ".webm recording stopped" );
+      console.log( ".mp4 recording stopped" );
       recorder.stop();
     }
 
