@@ -5,7 +5,7 @@ import p5DOM from 'p5/lib/addons/p5.dom'
  * @param {p5} p
  */
 
-export const sketch = ( p: p5Typed, dom: p5DOM ) => {
+export const sketch = ( p: p5Typed ) => {
   const width: number = 150
   const height: number = 150
   const framerate: number = 30
@@ -25,12 +25,12 @@ export const sketch = ( p: p5Typed, dom: p5DOM ) => {
     recorder.onstop = exportVideo
   }
 
-  const exportVideo = ( e ) => {
+  const exportVideo = () => {
     var blob = new Blob( chunks, { 'type' : 'video/mp4' } )
 
     // Draw video to screen
     var videoElement = document.createElement( 'video')
-    videoElement.setAttribute( "id", Date.now() )
+    videoElement.setAttribute( 'id', Date.now().toString() )
     videoElement.controls = true
     document.body.appendChild( videoElement )
     videoElement.src = window.URL.createObjectURL( blob )
@@ -39,7 +39,7 @@ export const sketch = ( p: p5Typed, dom: p5DOM ) => {
     var url = URL.createObjectURL( blob )
     var a = document.createElement( 'a' )
     document.body.appendChild( a )
-    a.style = 'display: none'
+    a.setAttribute( 'style', 'display: none' )
     a.href = url
     a.download = 'sketch.mp4'
     a.click()
@@ -66,14 +66,14 @@ export const sketch = ( p: p5Typed, dom: p5DOM ) => {
     // Export sketch's canvas to file when pressing "r"
     // if recording now true, start recording
     if ( p.keyCode === 82 && recording ) {
-      console.log( ".mp4 recording started" );
-      recorder.start();
+      console.log( ".mp4 recording started" )
+      recorder.start()
     }
 
     // if we are recording, stop recording
     if ( p.keyCode === 82 && !recording) {
-      console.log( ".mp4 recording stopped" );
-      recorder.stop();
+      console.log( ".mp4 recording stopped" )
+      recorder.stop()
     }
 
     // Export sketch's canvas to file when pressing "p"
