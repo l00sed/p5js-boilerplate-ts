@@ -1,14 +1,12 @@
 import p5Typed from 'p5'
 import p5DOM from 'p5/lib/addons/p5.dom'
+import p5DOM from 'p5/lib/addons/p5.sound'
 
 /**
  * @param {p5} p
  */
 
 export const sketch = ( p: p5Typed ) => {
-  const width: number = 150
-  const height: number = 150
-  const framerate: number = 30
   let recording = false
   let recorder
   let chunks = []
@@ -45,6 +43,10 @@ export const sketch = ( p: p5Typed ) => {
     a.click()
     window.URL.revokeObjectURL( url )
   }
+
+  const width: number = 150
+  const height: number = 150
+  const framerate: number = 30
 
   p.setup = () => {
     // Define your initial environment props & other stuff here
