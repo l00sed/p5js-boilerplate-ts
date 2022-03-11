@@ -14,7 +14,11 @@ export const sketch = (p:p5Typed) => {
   const record = () => {
     chunks.length = 0
     let stream = document.querySelector('canvas').captureStream(framerate)
-    recorder = new MediaRecorder(stream)
+    let options = {
+      videoBitsPerSecond: 5000000, // sets 5Mb bitrate
+      mimeType: 'video/webm; codecs=vp9' // use latest vp9 codec
+    }
+    recorder = new MediaRecorder(stream, options)
     recorder.ondataavailable = e => {
       if (e.data.size) {
         chunks.push(e.data)
@@ -24,7 +28,7 @@ export const sketch = (p:p5Typed) => {
   }
 
   const exportVideo = () => {
-    var blob = new Blob(chunks, {'type': 'video/mp4'})
+    var blob = new Blob(chunks, {'type': 'video/webm; codecs=vp9'})
 
     // Draw video to screen
     var videoElement = document.createElement('video')
@@ -39,9 +43,11 @@ export const sketch = (p:p5Typed) => {
     document.body.appendChild(a)
     a.setAttribute('style', 'display:none')
     a.href = url
-    a.download = 'sketch.mp4'
+    a.download = 'sketch.webm'
     a.click()
     window.URL.revokeObjectURL(url)
+    // IMPORTANT: Once downloaded, convert .webm to .mp4 using ffmpeg
+    // ffmpeg -i sketch.webm --fflags +genpts -r 25 -crf 0 -c:v copy sketch.mp4
   }
 
   const width:number = 200
@@ -74,13 +80,13 @@ export const sketch = (p:p5Typed) => {
     // Export sketch's canvas to file when pressing "r"
     // if recording now true, start recording
     if (p.keyCode === 82 && recording) {
-      console.log('.mp4 recording started')
+      console.log('.webm recording started')
       recorder.start()
     }
 
     // if we are recording, stop recording
     if (p.keyCode === 82 && !recording) {
-      console.log('.mp4 recording stopped')
+      console.log('.webm recording stopped')
       recorder.stop()
     }
 
