@@ -7,9 +7,9 @@
 // '@types/dom-mediacapture-record'
 
 // Typed p5.js library and add-ons
-import p5Typed from 'p5'
-import p5DOM from 'p5/lib/addons/p5.dom'
-import p5Sound from 'p5/lib/addons/p5.sound'
+import p5 from 'p5'
+import 'p5/lib/addons/p5.dom'   // must use 'p5.' context
+import 'p5/lib/addons/p5.sound' // must use 'p5.' context
 
 // Bug fix to attach video duration on save
 // --------------------------------------------------
@@ -31,7 +31,7 @@ interface CanvasElement extends HTMLCanvasElement {
  * @param {p5} p
  */
 
-export const sketch = (p:p5Typed, d:p5DOM, s:p5Sound) => {
+export const sketch = (p: p5) => {
   /* ==================================
    * Animation recording mechanics
    * ================================== */
