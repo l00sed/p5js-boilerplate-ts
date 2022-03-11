@@ -21,11 +21,11 @@
   "author": "Vladislav Mon <arcdeltax@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "p5": "^0.9.0",
-    "p5.easycam": "^1.0.1",
-    "underscore": "^1.13.2"
+    "fix-webm-duration": "^1.0.4",
+    "p5": "^0.9.0"
   },
   "devDependencies": {
+    "@types/dom-mediacapture-record": "^1.0.11",
     "@types/p5": "^0.9.0",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
