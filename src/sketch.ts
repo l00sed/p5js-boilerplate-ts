@@ -3,7 +3,8 @@
  */
 
 // Types for MediaRecorder and related classes
-import '@types/dom-mediacapture-record'
+// are included in the dev dependency:
+// '@types/dom-mediacapture-record'
 
 // Typed p5.js library and add-ons
 import p5Typed from 'p5'
