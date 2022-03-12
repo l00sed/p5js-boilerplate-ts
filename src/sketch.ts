@@ -1,31 +1,38 @@
-/* Script adapted by Daniel Tompkins AKA l00sed
+/* =============================================
+ * TypeScript p5.js Boilerplate
+ * adapted by Daniel Tompkins
  * https://github.com/l00sed/p5js-boilerplate-ts
- */
-
-// Types for MediaRecorder and related classes
-// are included in the dev dependency:
-// '@types/dom-mediacapture-record'
+ * ============================================= */
 
 // Typed p5.js library and add-ons
 import p5 from 'p5'
 import 'p5/lib/addons/p5.dom'   // must use 'p5.' context
 import 'p5/lib/addons/p5.sound' // must use 'p5.' context
 
-// Bug fix to attach video duration on save
-// --------------------------------------------------
-// https://github.com/yusitnikov/fix-webm-duration/blob/master/fix-webm-duration.js
-// --------------------------------------------------
-import ysFixWebmDuration from 'fix-webm-duration'
+/* ---------------------------------------------
+ * Types for MediaRecorder and related classes
+ * are included in the dev dependency:
+ * '@types/dom-mediacapture-record'
+ * --------------------------------------------- */
 
-// Fixes issues with HTMLCanvasElement type not recognizing
-// "captureStream" method (captureStream is still a working draft
-// as of June 2021)
-// --------------------------------------------------
-// https://stackoverflow.com/questions/50651091/unresolved-method-capturestream-on-htmlcanvaselement
-// --------------------------------------------------
+/* ---------------------------------------------
+ * Fixes issues with HTMLCanvasElement type not
+ * recognizing "captureStream" method
+ * (captureStream is still a working draft
+ * as of June 2021)
+ * ---------------------------------------------
+ * https://stackoverflow.com/questions/50651091/unresolved-method-capturestream-on-htmlcanvaselement
+ * --------------------------------------------- */
 interface CanvasElement extends HTMLCanvasElement {
-  captureStream(frameRate?:number):MediaStream
+  captureStream?(frameRate?:number):MediaStream
 }
+
+/* ---------------------------------------------
+ * P5Recorder - recorder.js adapted for ES6 and TypeScript
+ * ---------------------------------------------
+ * https://github.com/aferriss/p5Recorder
+ * --------------------------------------------- */
+import Recorder from './recorder'
 
 /**
  * @param {p5} p
@@ -38,78 +45,17 @@ export const sketch = (p: p5) => {
 
   // Set recording (and sketch) framerate
   const framerate:number = 30
+
   // Set MediaRecorder options
-  const options:Object = {
+  const settings:Object = {
+    fps: <number> framerate,
+    filename: <string> 'sketch.mp4',
+    codec: <string> 'video/webm; codecs=H264', // use h.264 codec
     videoBitsPerSecond: <number> 5000000, // sets 5Mb bitrate
-    mimeType: <string> 'video/webm; codecs=H264' // use h.264 codec
-  }
-  let mediaRecorder:MediaRecorder
-  let mediaParts:Array<BlobPart> = []
-  let startTime:number // will use exact start time in milliseconds
-  let recording:boolean = false // toggles on or off
-
-  // Setup canvas for recording to file
-  let canvas:CanvasElement
-  let stream:MediaStream
-
-  // Start recording the HTML canvas
-  const startRecording = (stream:MediaStream, options:Object) => {
-    mediaParts = [] // empty if recording exists
-    mediaRecorder = new MediaRecorder(stream, options)
-    mediaRecorder.onstop = function() {
-      let duration = Date.now() - startTime // get duration
-      let buggyBlob = new Blob(mediaParts, { type: 'video/mp4' })
-      // This is a bug fix that attaches duration to video container
-      ysFixWebmDuration(buggyBlob, duration, function(fixedBlob:Blob) {
-        displayResult(fixedBlob) // callback to append video to HTML
-      })
-    }
-    mediaRecorder.ondataavailable = function(event) {
-      let data = event.data
-      if (data && data.size > 0) {
-        mediaParts.push(data)
-      }
-    }
-    mediaRecorder.start()
-    // Start time = now in milliseconds
-    startTime = Date.now()
   }
 
-  // Stop recording of canvas element
-  const stopRecording = () => {
-    mediaRecorder.stop()
-  }
-
-  // Display recorded video in HTML
-  const displayResult = (blob:Blob) => {
-    // Draw video to screen
-    let videoElement = document.createElement('video')
-    videoElement.setAttribute('id', <string> Date.now().toString())
-    videoElement.controls = true
-    document.body.appendChild(videoElement)
-    videoElement.src = window.URL.createObjectURL(blob)
-
-    // Download the video
-    let url = URL.createObjectURL(blob)
-    let a = document.createElement('a')
-    document.body.appendChild(a)
-    a.setAttribute('style', 'display:none')
-    a.href = url
-    a.download = 'sketch.mp4'
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }
-
-  /*
-    NOTE
-    -----------------------------------------------
-      Once downloaded, if your video-editing
-      software has issues with the compression
-      codecs, try to copy to .mp4 using ffmpeg:
-
-      ffmpeg -i sketch.mp4 --fflags +genpts -r 25 -crf 0 -c:v copy sketch.mp4
-    -----------------------------------------------
-  */
+  let recorder:Recorder
+  let recording = false
 
   /* =====================================
    * P5.js - Setup
@@ -119,6 +65,7 @@ export const sketch = (p: p5) => {
   const width:number = 1500
   const height:number = 1500
 
+  let canvas:CanvasElement
   let context // Leave for use with gradients
 
   p.setup = () => {
@@ -143,21 +90,20 @@ export const sketch = (p: p5) => {
   p.keyPressed = () => {
     // toggle recording true or false
     recording = !recording
-    console.log('RECORDING: ')
-    console.log(recording)
+    console.log('RECORDING: '+recording.toString())
 
     // Export sketch's canvas to file when pressing "r"
     // if recording now true, start recording
     if (p.keyCode === 82 && recording) {
       console.log('Video recording started')
-      canvas = <CanvasElement> document.querySelector('canvas')
-      stream = canvas.captureStream(framerate)
-      startRecording(stream, options)
+      canvas = document.querySelector('canvas')
+      recorder = new Recorder(canvas, p, settings)
+      recorder.start()
     }
-    // if we are recording, stop recording
+    // if we are already recording, stop the recording
     if (p.keyCode === 82 && !recording) {
       console.log('Video recording stopped')
-      stopRecording()
+      recorder.stop()
     }
     // Export sketch's canvas to .png image file when pressing "p"
     if (p.keyCode === 80) {
