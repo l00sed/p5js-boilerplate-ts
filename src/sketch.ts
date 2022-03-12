@@ -88,9 +88,11 @@ export const sketch = (p: p5) => {
   }
 
   p.keyPressed = () => {
-    // toggle recording true or false
-    recording = !recording
-    console.log('RECORDING: '+recording.toString())
+    if (p.keyCode === 82) {
+      // toggle recording true or false
+      recording = !recording
+      console.log('RECORDING: '+recording.toString())
+    }
 
     // Export sketch's canvas to file when pressing "r"
     // if recording now true, start recording
