@@ -50,7 +50,7 @@ export const sketch = (p: p5) => {
   const settings:Object = {
     fps: <number> framerate,
     filename: <string> 'sketch.mp4',
-    codec: <string> 'video/webm; codecs=H264', // use h.264 codec
+    codec: <string> 'video/webm;codecs=h264,opus', // use h.264 codec
     videoBitsPerSecond: <number> 5000000, // sets 5Mb bitrate
   }
 

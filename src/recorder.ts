@@ -60,8 +60,8 @@ export default class Recorder {
     this.settings = settings
     this.audioOnly = settings.audioOnly || false
     this.fps = settings.fps || 60
-    this.filename = settings.filename || settings.audioOnly ? 'sketch.ogg' : 'sketch.mp4'
-    this.codec = settings.codec || settings.audioOnly ? 'audio/webm; codecs=opus' : 'video/webm; codecs=H264'
+    this.filename = settings.filename || (settings.audioOnly ? 'sketch.ogg' : 'sketch.mp4')
+    this.codec = settings.codec || (settings.audioOnly ? 'audio/webm;codecs=opus' : 'video/webm;codecs=h264,opus')
     this.videoBitsPerSecond = settings.videoBitsPerSecond || 2500000
 
     // Are we recording or not
